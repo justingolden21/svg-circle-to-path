@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Circle to Path</title>
+
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #0F172A;
+            background-color: #F8FAFC;
+        }
+
+        body {
+            margin: 2rem;
+        }
+
+        input,
+        textarea,
+        button {
+            background-color: #F1F5F9;
+            border: 1px solid #CBD5E1;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+
+        button,
+        textarea {
+            display: block;
+        }
+
+        button {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        button:hover {
+            background-color: #E2E8F0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>SVG Circle to Path</h1>
+    <p>Convert a svg circle to a path instantly</p>
+
+    <label for="cx">cx</label>
+    <input id="cx" type="number" value="100">
+    <label for="cy">cy</label>
+    <input id="cy" type="number" value="100">
+    <label for="r">r</label>
+    <input id="r" type="number" value="75" min="0">
+
+    <button onclick="convert()">Convert</button>
+
+    <label for="barePathOutput">bare path</label>
+    <textarea id="barePathOutput" cols="30" rows="4"></textarea>
+    <label for="pathOutput">path</label>
+    <textarea id="pathOutput" cols="30" rows="4"></textarea>
+    <label for="circleOutput">circle</label>
+    <textarea id="circleOutput" cols="30" rows="4"></textarea>
+
+    <script>
+        // https://stackoverflow.com/a/10477334/4907950
+        // Input: <circle cx="100" cy="100" r="75" />
+        // Ouptut: <path d="M100,100m75,0a75,75 0 1,0 -150,0a75,75 0 1,0 150,0"/>
+        function convert() {
+            const cx = document.getElementById('cx').value;
+            const cy = document.getElementById('cy').value;
+            const r = document.getElementById('r').value;
+
+            const path = `M${cx},${cy}m${r},0a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+
+            document.getElementById('barePathOutput').value = path;
+            document.getElementById('pathOutput').value = `<path d="${path}"/>`;
+            document.getElementById('circleOutput').value = `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
+
+        }
+        window.onload = convert;
+    </script>
+</body>
+
+</html>
