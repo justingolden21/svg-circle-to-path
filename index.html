@@ -17,7 +17,9 @@
         }
 
         body {
-            margin: 2rem;
+            width: 75%;
+            margin: 0 auto;
+
         }
 
         input,
@@ -76,6 +78,8 @@
     <textarea id="pathOutput" cols="30" rows="4"></textarea>
     <label for="circleOutput">Circle</label>
     <textarea id="circleOutput" cols="30" rows="4"></textarea>
+    <label for="viewboxOutput">Viewbox</label>
+    <textarea id="viewboxOutput" cols="30" rows="4"></textarea>
 
     <script>
         // https://stackoverflow.com/a/10477334/4907950
@@ -98,6 +102,7 @@
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
             document.getElementById('circleOutput').value = `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
+            document.getElementById('viewboxOutput').value = `viewbox="${cx - r} ${cy - r} ${r * 2} ${r * 2}"`;
 
         }
         window.onload = convert;
