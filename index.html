@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVG Circle to Path</title>
 
+    <!-- TODO: multiple circles input into one path/many paths -->
+
     <style>
         * {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,18 +29,23 @@
             margin: 0.5rem;
         }
 
-        button,
+
         textarea {
             display: block;
         }
 
         button {
-            margin-top: 2rem;
-            margin-bottom: 2rem;
+            cursor: pointer;
+            margin: 2rem 0;
         }
 
         button:hover {
             background-color: #E2E8F0;
+        }
+
+        #error {
+            background-color: #FEE2E2;
+            padding: 0.5rem;
         }
     </style>
 </head>
@@ -54,25 +61,36 @@
     <label for="r">r</label>
     <input id="r" type="number" value="75" min="0">
 
-    <button onclick="convert()">Convert</button>
+    <div>
+        <button onclick="convert()">Convert</button>
+    </div>
 
-    <label for="barePathOutput">bare path</label>
+    <label for="barePathOutput">Bare path</label>
     <textarea id="barePathOutput" cols="30" rows="4"></textarea>
-    <label for="pathOutput">path</label>
+    <label for="pathOutput">Path</label>
     <textarea id="pathOutput" cols="30" rows="4"></textarea>
-    <label for="circleOutput">circle</label>
+    <label for="circleOutput">Circle</label>
     <textarea id="circleOutput" cols="30" rows="4"></textarea>
+
+    <output id="error">Invalid inputs</output>
 
     <script>
         // https://stackoverflow.com/a/10477334/4907950
         // Input: <circle cx="100" cy="100" r="75" />
-        // Ouptut: <path d="M100,100m75,0a75,75 0 1,0 -150,0a75,75 0 1,0 150,0"/>
+        // Ouptut: <path d="M175,100a75,75 0 1,0 -150,0a75,75 0 1,0 150,0"/>
         function convert() {
             const cx = parseFloat(document.getElementById('cx').value);
             const cy = parseFloat(document.getElementById('cy').value);
             const r = parseFloat(document.getElementById('r').value);
 
-            const path = `M${cx+r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+            if(isNaN(cx) || isNaN(cy) || isNaN(r)) {
+                document.getElementById('error').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('error').style.display = 'none';
+            }
+
+            const path = `M${cx + r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
 
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
