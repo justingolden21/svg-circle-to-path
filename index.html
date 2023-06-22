@@ -28,9 +28,12 @@
             background-color: #F1F5F9;
             border: 1px solid #CBD5E1;
             padding: 0.5rem;
-            margin: 0.5rem;
         }
 
+        textarea,
+        input {
+            font-family: 'Courier New', monospace;
+        }
 
         textarea {
             display: block;
@@ -50,6 +53,17 @@
             padding: 0.5rem;
             margin-bottom: 1rem;
         }
+
+        .input-item {
+            padding: 0.25rem 0.5rem;
+        }
+
+
+        @media (min-width: 1024px) {
+            .input-item {
+                display: inline-block;
+            }
+        }
     </style>
 </head>
 
@@ -58,28 +72,42 @@
     <p>Convert a svg circle to a path instantly</p>
 
     <form onsubmit="convert(); return false;">
-        <label for="cx">cx</label>
-        <input id="cx" type="number" value="100">
-        <label for="cy">cy</label>
-        <input id="cy" type="number" value="100">
-        <label for="r">r</label>
-        <input id="r" type="number" value="75" min="0">
+        <div class="input-item">
+            <label for="cx">cx</label>
+            <input id="cx" type="number" value="100">
+        </div>
+        <div class="input-item">
+            <label for="cy">cy</label>
+            <input id="cy" type="number" value="100">
+        </div>
+        <div class="input-item">
+            <label for="r">r</label>
+            <input id="r" type="number" value="75" min="0">
+        </div>
 
-        <div>
+        <div class="input-item">
             <button>Convert</button>
         </div>
     </form>
 
     <output id="error">Invalid inputs</output>
 
-    <label for="barePathOutput">Bare path</label>
-    <textarea id="barePathOutput" cols="30" rows="4"></textarea>
-    <label for="pathOutput">Path</label>
-    <textarea id="pathOutput" cols="30" rows="4"></textarea>
-    <label for="circleOutput">Circle</label>
-    <textarea id="circleOutput" cols="30" rows="4"></textarea>
-    <label for="viewboxOutput">Viewbox</label>
-    <textarea id="viewboxOutput" cols="30" rows="4"></textarea>
+    <div class="input-item">
+        <label for="barePathOutput">Bare path</label>
+        <textarea id="barePathOutput" cols="30" rows="4"></textarea>
+    </div>
+    <div class="input-item">
+        <label for="pathOutput">Path</label>
+        <textarea id="pathOutput" cols="30" rows="4"></textarea>
+    </div>
+    <div class="input-item">
+        <label for="circleOutput">Circle</label>
+        <textarea id="circleOutput" cols="30" rows="4"></textarea>
+    </div>
+    <div class="input-item">
+        <label for="viewboxOutput">Viewbox</label>
+        <textarea id="viewboxOutput" cols="30" rows="4"></textarea>
+    </div>
 
     <script>
         // https://stackoverflow.com/a/10477334/4907950
