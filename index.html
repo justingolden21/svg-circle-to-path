@@ -46,6 +46,7 @@
         #error {
             background-color: #FEE2E2;
             padding: 0.5rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -65,14 +66,14 @@
         <button onclick="convert()">Convert</button>
     </div>
 
+    <output id="error">Invalid inputs</output>
+
     <label for="barePathOutput">Bare path</label>
     <textarea id="barePathOutput" cols="30" rows="4"></textarea>
     <label for="pathOutput">Path</label>
     <textarea id="pathOutput" cols="30" rows="4"></textarea>
     <label for="circleOutput">Circle</label>
     <textarea id="circleOutput" cols="30" rows="4"></textarea>
-
-    <output id="error">Invalid inputs</output>
 
     <script>
         // https://stackoverflow.com/a/10477334/4907950
@@ -83,7 +84,7 @@
             const cy = parseFloat(document.getElementById('cy').value);
             const r = parseFloat(document.getElementById('r').value);
 
-            if(isNaN(cx) || isNaN(cy) || isNaN(r)) {
+            if (isNaN(cx) || isNaN(cy) || isNaN(r)) {
                 document.getElementById('error').style.display = 'block';
                 return;
             } else {
