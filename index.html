@@ -55,16 +55,18 @@
     <h1>SVG Circle to Path</h1>
     <p>Convert a svg circle to a path instantly</p>
 
-    <label for="cx">cx</label>
-    <input id="cx" type="number" value="100">
-    <label for="cy">cy</label>
-    <input id="cy" type="number" value="100">
-    <label for="r">r</label>
-    <input id="r" type="number" value="75" min="0">
+    <form onsubmit="convert(); return false;">
+        <label for="cx">cx</label>
+        <input id="cx" type="number" value="100">
+        <label for="cy">cy</label>
+        <input id="cy" type="number" value="100">
+        <label for="r">r</label>
+        <input id="r" type="number" value="75" min="0">
 
-    <div>
-        <button onclick="convert()">Convert</button>
-    </div>
+        <div>
+            <button onclick="convert()">Convert</button>
+        </div>
+    </form>
 
     <output id="error">Invalid inputs</output>
 
