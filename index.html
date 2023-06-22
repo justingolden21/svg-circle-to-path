@@ -68,11 +68,11 @@
         // Input: <circle cx="100" cy="100" r="75" />
         // Ouptut: <path d="M100,100m75,0a75,75 0 1,0 -150,0a75,75 0 1,0 150,0"/>
         function convert() {
-            const cx = document.getElementById('cx').value;
-            const cy = document.getElementById('cy').value;
-            const r = document.getElementById('r').value;
+            const cx = parseFloat(document.getElementById('cx').value);
+            const cy = parseFloat(document.getElementById('cy').value);
+            const r = parseFloat(document.getElementById('r').value);
 
-            const path = `M${cx},${cy}m${r},0a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+            const path = `M${cx+r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
 
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
