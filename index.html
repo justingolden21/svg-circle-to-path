@@ -183,7 +183,7 @@
                 document.getElementById('error').style.display = 'none';
             }
 
-            const path = `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10 ${r * 2} 0`;
+            const path = `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10${r * 2} 0`;
 
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
@@ -217,7 +217,7 @@
                 const cx = cxs[i];
                 const cy = cys[i];
                 const r = rs[i];
-                paths += `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10 ${r * 2} 0`;
+                paths += `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10${r * 2} 0`;
                 circles += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
 
                 if (cx - r < minX) {
