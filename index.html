@@ -43,7 +43,8 @@
             margin: 2rem 0;
         }
 
-        button:hover {
+        button:hover,
+        .tab.active {
             background-color: #E2E8F0;
         }
 
@@ -57,14 +58,30 @@
             padding: 0.25rem 0.5rem;
         }
 
+        #mass-input {
+            width: 100%;
+        }
 
         @media (min-width: 1024px) {
             .input-item {
                 display: inline-block;
             }
+
             body {
                 text-align: center;
             }
+
+        }
+
+        .tabs {
+            display: block;
+            border-bottom: 1px solid #CBD5E1;
+            margin: 2rem 0;
+        }
+
+        button.tab {
+            margin: 0 1rem 0 0;
+            display: inline-block;
         }
     </style>
 </head>
@@ -73,18 +90,30 @@
     <h1>SVG Circle to Path</h1>
     <p>Convert a svg circle to a path instantly</p>
 
+    <div class="tabs">
+        <button id="tab-one" class="tab active">One Circle</button>
+        <button id="tab-many" class="tab">Many Circles</button>
+    </div>
+
     <form onsubmit="convert(); return false;">
-        <div class="input-item">
-            <label for="cx">cx</label>
-            <input id="cx" type="number" value="100" step="any">
+        <div id="circles-input">
+            <label for="mass-input">SVG circle(s)</label>
+            <textarea id="mass-input" rows="10"></textarea>
         </div>
-        <div class="input-item">
-            <label for="cy">cy</label>
-            <input id="cy" type="number" value="100" step="any">
-        </div>
-        <div class="input-item">
-            <label for="r">r</label>
-            <input id="r" type="number" value="75" min="0" step="any">
+
+        <div id="circle-input">
+            <div class="input-item">
+                <label for="cx">cx</label>
+                <input id="cx" type="number" value="100" step="any">
+            </div>
+            <div class="input-item">
+                <label for="cy">cy</label>
+                <input id="cy" type="number" value="100" step="any">
+            </div>
+            <div class="input-item">
+                <label for="r">r</label>
+                <input id="r" type="number" value="75" min="0" step="any">
+            </div>
         </div>
 
         <div class="input-item">
@@ -112,10 +141,34 @@
     </div>
 
     <script>
+        // Tabs
+        let activeTab = 'one';
+        window.addEventListener('load', () => {
+            document.getElementById('tab-one').addEventListener('click', () => {
+                activeTab = 'one';
+                document.getElementById('tab-one').classList.add('active');
+                document.getElementById('tab-many').classList.remove('active');
+
+                document.getElementById('circles-input').style.display = 'none';
+                document.getElementById('circle-input').style.display = 'block';
+            });
+            document.getElementById('tab-many').addEventListener('click', () => {
+                activeTab = 'many';
+                document.getElementById('tab-one').classList.remove('active');
+                document.getElementById('tab-many').classList.add('active');
+
+                document.getElementById('circles-input').style.display = 'block';
+                document.getElementById('circle-input').style.display = 'none';
+            });
+
+            document.getElementById('tab-one').click();
+        });
+
+        // Convert a single circle
         // https://stackoverflow.com/a/10477334/4907950
         // Input: <circle cx="100" cy="100" r="75" />
         // Ouptut: <path d="M175,100a75,75 0 1,0 -150,0a75,75 0 1,0 150,0"/>
-        function convert() {
+        function convertSingle() {
             const cx = parseFloat(document.getElementById('cx').value);
             const cy = parseFloat(document.getElementById('cy').value);
             const r = parseFloat(document.getElementById('r').value);
@@ -133,7 +186,62 @@
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
             document.getElementById('circleOutput').value = `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
             document.getElementById('viewboxOutput').value = `viewbox="${cx - r} ${cy - r} ${r * 2} ${r * 2}"`;
+        }
 
+        // Convert multiple circles
+        function convertMultiple() {
+            let val = document.getElementById('mass-input').value;
+
+            // Find `cx="number"` and map each value to the number
+            const cxs = (val.match(/cx="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('cx="', '').replace('"', '')));
+            const cys = (val.match(/cy="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('cy="', '').replace('"', '')));
+            const rs = (val.match(/r="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('r="', '').replace('"', '')));
+
+            const len = Math.min(cxs.length, cys.length, rs.length);
+            let paths = '';
+            let circles = '';
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            for (let i = 0; i < len; i++) {
+                const cx = cxs[i];
+                const cy = cys[i];
+                const r = rs[i];
+                paths += `M${cx + r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+                circles += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
+
+                if (cx - r < minX) {
+                    minX = cx - r;
+                }
+                if (cy - r < minY) {
+                    minY = cy - r;
+                }
+                if (cx + r > maxX) {
+                    maxX = cx + r;
+                }
+                if (cy + r > maxY) {
+                    maxY = cy + r;
+                }
+            }
+
+            if (len === 0) {
+                document.getElementById('error').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('error').style.display = 'none';
+            }
+
+            document.getElementById('barePathOutput').value = paths;
+            document.getElementById('pathOutput').value = `<path d="${paths}"/>`;
+            document.getElementById('circleOutput').value = circles;
+            document.getElementById('viewboxOutput').value = `viewbox="${minX} ${minY} ${maxX - minX} ${maxY - minY}"`;
+        }
+
+        // Convert single or multiple based on current tab
+        function convert() {
+            if (activeTab === 'one') {
+                convertSingle();
+            } else {
+                convertMultiple();
+            }
         }
         window.onload = convert;
     </script>
