@@ -192,12 +192,21 @@
         function convertMultiple() {
             let val = document.getElementById('mass-input').value;
 
-            // Find `cx="number"` and map each value to the number
-            const cxs = (val.match(/cx="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('cx="', '').replace('"', '')));
-            const cys = (val.match(/cy="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('cy="', '').replace('"', '')));
-            const rs = (val.match(/r="[0-9]+"/g) || []).map(elm => parseFloat(elm.replace('r="', '').replace('"', '')));
+            // Match any number of digits, zero or one dot, then one or more digits
+            // https://stackoverflow.com/a/12117062/4907950
+            const cxs = (val.match(/cx="\d*\.?\d+"/g) || []).map(elm => parseFloat(elm.replace('cx="', '').replace('"', '')));
+            const cys = (val.match(/cy="\d*\.?\d+"/g) || []).map(elm => parseFloat(elm.replace('cy="', '').replace('"', '')));
+            const rs = (val.match(/r="\d*\.?\d+"/g) || []).map(elm => parseFloat(elm.replace('r="', '').replace('"', '')));
 
             const len = Math.min(cxs.length, cys.length, rs.length);
+            console.log(cxs, cys, rs);
+            if (len === 0 || cxs.length !== cys.length || cxs.length !== rs.length) {
+                document.getElementById('error').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('error').style.display = 'none';
+            }
+
             let paths = '';
             let circles = '';
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
@@ -220,13 +229,6 @@
                 if (cy + r > maxY) {
                     maxY = cy + r;
                 }
-            }
-
-            if (len === 0) {
-                document.getElementById('error').style.display = 'block';
-                return;
-            } else {
-                document.getElementById('error').style.display = 'none';
             }
 
             document.getElementById('barePathOutput').value = paths;
