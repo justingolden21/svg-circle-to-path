@@ -7,7 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVG Circle to Path</title>
 
-    <!-- TODO: multiple circles input into one path/many paths -->
+    <!-- TODO:
+        local storage
+        optimize negative numbers in paths
+        show rendered/preview output
+     -->
 
     <style>
         * {
@@ -180,7 +184,7 @@
                 document.getElementById('error').style.display = 'none';
             }
 
-            const path = `M${cx + r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+            const path = `M${cx + r},${cy}a${r},${r} 0 10 -${r * 2},0a${r},${r} 0 10 ${r * 2},0`;
 
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
@@ -214,7 +218,7 @@
                 const cx = cxs[i];
                 const cy = cys[i];
                 const r = rs[i];
-                paths += `M${cx + r},${cy}a${r},${r} 0 1,0 -${r * 2},0a${r},${r} 0 1,0 ${r * 2},0`;
+                paths += `M${cx + r},${cy}a${r},${r} 0 10 -${r * 2},0a${r},${r} 0 10 ${r * 2},0`;
                 circles += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
 
                 if (cx - r < minX) {
