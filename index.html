@@ -10,7 +10,9 @@
 
     <!-- TODO:
         local storage
-        show rendered/preview output
+        show number of characters in each output
+        show number of circles
+        handle ellipse (and choose rx, ry, min, max, or average)
 
         fix floating point math bugs. eg:
         <circle cx="44.7" cy="58.3" r="4.7"/>
@@ -91,6 +93,16 @@
             margin: 0 1rem 0 0;
             display: inline-block;
         }
+
+        #svg-output {
+            margin: 2rem auto;
+            height: 4rem;
+            width: 4rem;
+        }
+
+        #svg-output svg {
+            border: 1px solid #CBD5E1;
+        }
     </style>
 </head>
 
@@ -106,7 +118,7 @@
     <form onsubmit="convert(); return false;">
         <div id="circles-input">
             <label for="mass-input">SVG circle(s)</label>
-            <textarea id="mass-input" rows="10"></textarea>
+            <textarea id="mass-input" rows="10">&lt;circle cx="100" cy="100" r="75" /&gt;</textarea>
         </div>
 
         <div id="circle-input">
@@ -147,6 +159,8 @@
         <label for="viewboxOutput">Viewbox</label>
         <textarea id="viewboxOutput" cols="30" rows="4"></textarea>
     </div>
+
+    <div id="svg-output"></div>
 
     <script>
         // Tabs
@@ -189,11 +203,14 @@
             }
 
             const path = `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10${r * 2} 0`;
+            const viewbox = `viewbox="${cx - r} ${cy - r} ${r * 2} ${r * 2}"`;
 
             document.getElementById('barePathOutput').value = path;
             document.getElementById('pathOutput').value = `<path d="${path}"/>`;
             document.getElementById('circleOutput').value = `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
-            document.getElementById('viewboxOutput').value = `viewbox="${cx - r} ${cy - r} ${r * 2} ${r * 2}"`;
+            document.getElementById('viewboxOutput').value = viewbox;
+
+            document.getElementById('svg-output').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" ${viewbox}><path d="${path}"/></svg>`;
         }
 
         // Convert multiple circles
@@ -215,14 +232,14 @@
                 document.getElementById('error').style.display = 'none';
             }
 
-            let paths = '';
+            let path = '';
             let circles = '';
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
             for (let i = 0; i < len; i++) {
                 const cx = cxs[i];
                 const cy = cys[i];
                 const r = rs[i];
-                paths += `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10${r * 2} 0`;
+                path += `M${cx + r}${cy > 0 ? ' ' + cy : cy}a${r} ${r} 0 10-${r * 2} 0 ${r} ${r} 0 10${r * 2} 0`;
                 circles += `<circle cx="${cx}" cy="${cy}" r="${r}" />`;
 
                 if (cx - r < minX) {
@@ -238,11 +255,14 @@
                     maxY = cy + r;
                 }
             }
+            const viewbox = `viewbox="${minX} ${minY} ${maxX - minX} ${maxY - minY}"`;
 
-            document.getElementById('barePathOutput').value = paths;
-            document.getElementById('pathOutput').value = `<path d="${paths}"/>`;
+            document.getElementById('barePathOutput').value = path;
+            document.getElementById('pathOutput').value = `<path d="${path}"/>`;
             document.getElementById('circleOutput').value = circles;
-            document.getElementById('viewboxOutput').value = `viewbox="${minX} ${minY} ${maxX - minX} ${maxY - minY}"`;
+            document.getElementById('viewboxOutput').value = viewbox;
+
+            document.getElementById('svg-output').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" ${viewbox}><path d="${path}"/></svg>`;
         }
 
         // Convert single or multiple based on current tab
